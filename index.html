@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expected GP Time Calculator</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        label { display: inline-block; width: 150px; margin-bottom: 10px; }
+        input, select { margin-bottom: 10px; }
+        #result { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>Expected GP Time Calculator</h2>
+
+    <label for="income">EV / sec:</label>
+    <input type="number" id="income"><br>
+
+    <label for="exponentIncome">Income Exponent:</label>
+    <select id="exponentIncome">
+        <option value="1">-</option>
+        <option value="1000">K</option>
+        <option value="1000000">M</option>
+        <option value="1000000000">B</option>
+        <option value="1000000000000">T</option>
+        <option value="1000000000000000">Q</option>
+    </select><br>
+
+    <label for="saveings">EV saved:</label>
+    <input type="number" id="saveings"><br>
+
+    <label for="exponentSaveings">Saveings Exponent:</label>
+    <select id="exponentSaveings">
+        <option value="1">-</option>
+        <option value="1000">K</option>
+        <option value="1000000">M</option>
+        <option value="1000000000">B</option>
+        <option value="1000000000000">T</option>
+        <option value="1000000000000000">Q</option>
+    </select><br>
+
+    <label for="target">GP wished:</label>
+    <input type="number" id="target"><br>
+
+    <label for="exponentTarget">Target Exponent:</label>
+    <select id="exponentTarget">
+        <option value="1">-</option>
+        <option value="1000">K</option>
+        <option value="1000000">M</option>
+        <option value="1000000000">B</option>
+        <option value="1000000000000">T</option>
+        <option value="1000000000000000">Q</option>
+    </select><br>
+
+    <label for="timeUnit">Time Unit:</label>
+    <select id="timeUnit">
+        <option value="seconds">seconds</option>
+        <option value="minutes">minutes</option>
+        <option value="hours">hours</option>
+        <option value="days">days</option>
+        <option value="years">years</option>
+    </select><br>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <div id="result">
+        <p>Expected Time: <span id="expectedTime"></span></p>
+        <p>Time Since Last GP: <span id="timeSinceLastGP"></span></p>
+    </div>
+
+    <script>
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value);
+            const saveings = parseFloat(document.getElementById('saveings').value);
+            const target = parseInt(document.getElementById('target').value);
+
+            const exponentIncome = parseFloat(document.getElementById('exponentIncome').value);
+            const exponentSaveings = parseFloat(document.getElementById('exponentSaveings').value);
+            const exponentTarget = parseFloat(document.getElementById('exponentTarget').value);
+
+            const timeUnit = document.getElementById('timeUnit').value;
+
+            if (isNaN(income) || isNaN(saveings) || isNaN(target)) {
+                alert("Please enter valid numbers!");
+                return;
+            }
+
+            const targetValue = Math.pow(400 * target * exponentTarget, 3);
+            const remaining = targetValue - saveings * exponentSaveings;
+            let result = Math.floor(remaining / (income * exponentIncome));
+
+            const targetM1Value = Math.pow(400 * (target - 1) * exponentTarget, 3);
+            const remainingM1 = targetM1Value - saveings * exponentSaveings;
+            let resultM1 = Math.floor(remainingM1 / (income * exponentIncome));
+
+            if (result < 0) result = 0;
+            resultM1 = result - resultM1;
+
+            result = adjustForTimeUnit(result, timeUnit);
+            resultM1 = adjustForTimeUnit(resultM1, timeUnit);
+
+            document.getElementById('expectedTime').textContent = result + ' ' + timeUnit;
+            document.getElementById('timeSinceLastGP').textContent = resultM1 + ' ' + timeUnit;
+        }
+
+        function adjustForTimeUnit(value, unit) {
+            switch (unit) {
+                case 'minutes': return value / 60;
+                case 'hours': return value / 3600;
+                case 'days': return value / 86400;
+                case 'years': return value / 31536000;
+                default: return value; // seconds by default
+            }
+        }
+    </script>
+</body>
+</html>
