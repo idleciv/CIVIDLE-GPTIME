@@ -6,9 +6,10 @@
     <title>Expected GP Time Calculator</title>
     <style>
    body {
+font-family: Arial, sans-serif; margin: 20px;
             padding: 25px;
-            background-color: black;
-            color: white;
+            background-color: white;
+            color: black;
             font-size: 25px;
         }
 
@@ -21,6 +22,9 @@
             background-color: white;
             color: black;
         }
+ 	label { display: inline-block; width: 150px; margin-bottom: 10px; }
+        input, select { margin-bottom: 10px; }
+        #result { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -127,6 +131,8 @@
             }
         }
     </script>
+<button onclick="darkMode()">Darkmode</button>
+    <button onclick="lightMode()">LightMode</button>
     <script>
         function darkMode() {
             let element = document.body;
