@@ -5,26 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expected GP Time Calculator</title>
     <style>
-   body {
-font-family: Arial, sans-serif; margin: 20px;
+        body {
+            font-family: Arial, sans-serif; 
+            margin: 20px;
             padding: 25px;
             background-color: black;
-            color: white;
+            color: grey;
             font-size: 25px;
         }
 
         .dark-mode {
             background-color: black;
-            color: white;
+            color: grey;
         }
 
         .light-mode {
             background-color: white;
             color: black;
         }
- 	label { display: inline-block; width: 150px; margin-bottom: 10px; }
-        input, select { margin-bottom: 10px; }
-        #result { margin-top: 20px; }
+
+        label { 
+            display: inline-block; 
+            width: 150px; 
+            margin-bottom: 10px; 
+        }
+
+        input, select { 
+            margin-bottom: 10px; 
+        }
+
+        select {
+            color: grey; /* Sets the text color of the select dropdown */
+            background-color: black; /* Background of dropdown */
+            border: 1px solid grey; /* Border styling */
+            padding: 5px;
+        }
+
+        option {
+            color: grey; /* Sets the color of the options */
+            background-color: black; /* Sets the background for the options */
+        }
+
+        #result { 
+            margin-top: 20px; 
+        }
     </style>
 </head>
 <body>
@@ -79,22 +103,28 @@ font-family: Arial, sans-serif; margin: 20px;
         <option value="years">years</option>
     </select><br>
 
-    <button onclick="calculate()">Calculate</button>
-
     <div id="result">
         <p>Expected Time: <span id="expectedTime"></span></p>
-        <p>Time Since Last GP: <span id="timeSinceLastGP"></span></p>
+        <p>Time Since Last GP: <span style="color:blue" id="timeSinceLastGP"></span></p>
     </div>
 
-    <script>
-        function calculate() {
-            const income = parseFloat(document.getElementById('income').value);
-            const saveings = parseFloat(document.getElementById('saveings').value);
-            const target = parseInt(document.getElementById('target').value);
+    <button onclick="darkMode()">Darkmode</button>
+    <button onclick="lightMode()">LightMode</button>
 
-            const exponentIncome = parseFloat(document.getElementById('exponentIncome').value);
-            const exponentSaveings = parseFloat(document.getElementById('exponentSaveings').value);
-            const exponentTarget = parseFloat(document.getElementById('exponentTarget').value);
+    <script>
+        // Add event listeners to trigger calculation on input change
+        document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('input', calculate);
+        });
+
+        function calculate() {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+            const saveings = parseFloat(document.getElementById('saveings').value) || 0;
+            const target = parseInt(document.getElementById('target').value) || 0;
+
+            const exponentIncome = parseFloat(document.getElementById('exponentIncome').value) || 1;
+            const exponentSaveings = parseFloat(document.getElementById('exponentSaveings').value) || 1;
+            const exponentTarget = parseFloat(document.getElementById('exponentTarget').value) || 1;
 
             const timeUnit = document.getElementById('timeUnit').value;
 
@@ -103,17 +133,25 @@ font-family: Arial, sans-serif; margin: 20px;
                 return;
             }
 
+            // Calculate the target value and remaining amount to reach the goal
             const targetValue = Math.pow(400 * target * exponentTarget, 3);
             const remaining = targetValue - saveings * exponentSaveings;
             let result = Math.floor(remaining / (income * exponentIncome));
 
-            const targetM1Value = Math.pow(400 * (target - 1) * exponentTarget, 3);
-            const remainingM1 = targetM1Value - saveings * exponentSaveings;
-            let resultM1 = Math.floor(remainingM1 / (income * exponentIncome));
+            let resultM1 = 0;
+
+            // Only calculate "Time Since Last GP" if target is at least 2
+            if (target > 1) {
+                const targetM1Value = Math.pow(400 * (target - 1) * exponentTarget, 3);
+                const remainingM1 = targetM1Value - saveings * exponentSaveings;
+                resultM1 = Math.floor(remainingM1 / (income * exponentIncome));
+                resultM1 = result - resultM1;
+            }
 
             if (result < 0) result = 0;
-            resultM1 = result - resultM1;
+            if (resultM1 < 0) resultM1 = 0;
 
+            // Adjust the results based on the selected time unit
             result = adjustForTimeUnit(result, timeUnit);
             resultM1 = adjustForTimeUnit(resultM1, timeUnit);
 
@@ -130,21 +168,15 @@ font-family: Arial, sans-serif; margin: 20px;
                 default: return value; // seconds by default
             }
         }
-    </script>
-<button onclick="darkMode()">Darkmode</button>
-    <button onclick="lightMode()">LightMode</button>
-    <script>
+
         function darkMode() {
             let element = document.body;
-            let content = document.getElementById("DarkModetext");
             element.className = "dark-mode";
-            content.innerText = "Dark Mode is ON";
         }
+
         function lightMode() {
             let element = document.body;
-            let content = document.getElementById("DarkModetext");
             element.className = "light-mode";
-            content.innerText = "Dark Mode is OFF";
         }
     </script>
 </body>
