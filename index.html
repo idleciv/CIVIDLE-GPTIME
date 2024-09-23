@@ -5,10 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expected GP Time Calculator</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        label { display: inline-block; width: 150px; margin-bottom: 10px; }
-        input, select { margin-bottom: 10px; }
-        #result { margin-top: 20px; }
+   body {
+            padding: 25px;
+            background-color: white;
+            color: black;
+            font-size: 25px;
+        }
+
+        .dark-mode {
+            background-color: black;
+            color: white;
+        }
+
+        .light-mode {
+            background-color: white;
+            color: black;
+        }
     </style>
 </head>
 <body>
@@ -113,6 +125,20 @@
                 case 'years': return value / 31536000;
                 default: return value; // seconds by default
             }
+        }
+    </script>
+    <script>
+        function darkMode() {
+            let element = document.body;
+            let content = document.getElementById("DarkModetext");
+            element.className = "dark-mode";
+            content.innerText = "Dark Mode is ON";
+        }
+        function lightMode() {
+            let element = document.body;
+            let content = document.getElementById("DarkModetext");
+            element.className = "light-mode";
+            content.innerText = "Dark Mode is OFF";
         }
     </script>
 </body>
